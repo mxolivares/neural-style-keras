@@ -1,18 +1,30 @@
 # neural-style-keras
-Implementation of neural style transfer methods using Keras and Tensorflow. This includes the iterative stylization from [1], the fast style transfer from [2] and the multi-style nets from [3]. All models include instance normalization [4].
+
+Fork of [neural-style-keras](https://github.com/robertomest/neural-style-keras) which provides an implementation of neural style transfer methods using Keras and Tensorflow. This includes the iterative stylization from [1], the fast style transfer from [2] and the multi-style nets from [3]. All models include instance normalization [4].
+
+In this repository, some experiments will be carried out on the different models such as tests with a webcam. Some minor changes could be made to the documentation. Required updates should be reflected in the related REQUIREMENTS.txt file.
+
+Go to the README file of the source repository for the original instructions and functionality.
+
+You will find a test image in the folder 'workspace/input_imgs', which was downloaded from
+[Pexels](https://www.pexels.com/photo/france-landmark-lights-night-2363/).
 
 ## Fast style transfer
-To use a pre-tained net simply use the script
+To use a pre-trained net we can use the script
 
 ```bash
-python fast_stye_transfer.py --checkpoint_path data/models/candy.h5 --input_path content_imgs\
---output_path pastiche_output --use_style_name
+python fast_style_transfer.py --checkpoint_path data/models/udnie.h5 \
+--input_path workspace/input_imgs --output_path workspace/output --use_style_name
 ```
 
 All the images in the `input_path` will be stylized and the resulting images will be saved on the `output_path`. If the network was trained on multiple styles, all styles will be applied.
 
-## Training a pastiche network
-#### Set up coco
+Currently, there are no pre-trained models related to this fork.
+
+In the original repository, the following  [script](https://github.com/robertomest/neural-style-keras/blob/master/data/models/download_models.sh) is available to find some pre-trained models.
+
+## Training
+#### Required dataset
 You may download [the coco dataset](http://mscoco.org/home/) [5] with the provided script (it may take a while)
 ```bash
 cd data; sh download_coco.sh
@@ -24,7 +36,7 @@ python make_style_dataset.py
 #### Make the gram dataset
 You should then make the gram dataset, this will pre-compute the gram matrices for the styles the net will be trained on. At this stage you should input the size of each image for the computation of the gram matrices. For more information on the usage see [this section](#make_gram_dataset). Below is an example:
 ```bash
-python make_gram_dataset.py --gram_dataset_path candy_grams.h5 --style_dir style_imgs \
+python make_gram_dataset.py --gram_dataset_path candy_grams.h5 --style_dir styles \
 --style_imgs candy.jpg --style_img_size 384 --gpu 0
 ```
 #### Train the network
@@ -33,28 +45,6 @@ You may then train the network with the `train.py` script. For more usage inform
 python train.py --content_weight 1 --style_weight 10 --tv_weight 1e-4 --norm_by_channels \
 --gram_dataset_path candy_grams.h5 --checkpoint_path candy.h5
 ```
-
-### Stylized images
-Below are some examples of images stylized by trained networks. Each row contains, respectively, the style image, the content image and images stylized by a single style net and by a 6-style net. All images on the fourth column were stylized by the same network.
-
-<div align='center'>
-  <img src='style_imgs/the_scream.jpg' height='165px'/>
-  <img src='content_imgs/chicago.jpg' height='165px'/>
-  <img src='readme_imgs/1style/chicago_style_the_scream.png' height='165px'/>
-  <img src='readme_imgs/6styles/chicago_style_the_scream.png' height='165px'/>
-</div>
-<div align='center'>
-  <img src='style_imgs/feathers.jpg' height='180px'/>
-  <img src='content_imgs/golden_gate.jpg' height='180px'/>
-  <img src='readme_imgs/1style/golden_gate_style_feathers.png' height='180px'/>
-  <img src='readme_imgs/6styles/golden_gate_style_feathers.png' height='180px'/>
-</div>
-<div align='center'>
-  <img src='style_imgs/candy.jpg' height='130px'/>
-  <img src='content_imgs/hoovertowernight.jpg' height='130px'/>
-  <img src='readme_imgs/1style/hoovertowernight_style_candy.png' height='130px'/>
-  <img src='readme_imgs/6styles/hoovertowernight_style_candy.png' height='130px'/>
-</div>
 
 ## Script usage
 ### make_gram_dataset
@@ -89,9 +79,9 @@ Script that trains the pastiche network. You should have preprocessed the coco d
 You can stylize the image by iteratively updating the input image so as to minimize loss.
 ```bash
 python iterative_style_transfer.py \
---content_image_path content_imgs/tubingen.jpg \
---style_image_path style_imgs/starry_night.jpg \
---output_path starry_tubingen.png
+--content_image_path workspace/input_imgs/france-landmark-lights-night.jpg \
+--style_image_path styles/udnie.jpg \
+--output_path workspace/output/france-landmark-lights-night-udnie.png
 ```
 
 The full set of options include:
@@ -114,44 +104,18 @@ The full set of options include:
 * `--gpu`: which gpu to run it on. Use `-1` to run on cpu. It is very recommended to run this on a gpu.
 * `--allow_growth`: flag that stops tensorflow from allocating all gpu memory at the start of the session.
 
-#### Examples
-**Initializing with noise**
-
-```bash
-python iterative_style_transfer.py \
---content_image_path content_imgs/tubingen.jpg \
---style_image_path style_imgs/candy.jpg \
---output_path candy_tubingen.png \
---content_weight 5 --style_weight 30 \
---tv_weight 1e-3 --norm_by_channels \
---style_img_size 384 --gpu 0
-```
-
-<div align=center>
-  <img src='readme_imgs/candy_tubingen_init_random.gif' style='width: 512px'/>
-</div>
-
-**Initializing with content**
-
-```bash
-python iterative_style_transfer.py \
---content_image_path content_imgs/tubingen.jpg \
---style_image_path style_imgs/candy.jpg \
---output_path candy_tubingen_content.png \
---content_weight 5 --style_weight 100 \
---norm_by_channels --style_img_size 384 \
---gpu 0 --init content
-```
-
-<div align=center>
-  <img src='readme_imgs/candy_tubingen_init_content.gif' style='width: 512px'/>
-</div>
 
 ## Requirements
+
 * keras
 * tensorflow
 * h5py
 * pyyaml
+* Pillow
+
+The experiments on this repository will consider the use of Python 3.
+
+There could be differences with the requirements with the develop branch.
 
 ## References
 * [1]: L. A. Gatys, A. S. Ecker and M. Bethge. "A Neural Algorithm for Artistic Style". [Arxiv](https://arxiv.org/abs/1508.06576).

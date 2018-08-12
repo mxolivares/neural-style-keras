@@ -137,8 +137,20 @@ ENV/
 .ropeproject
 
 # End of https://www.gitignore.io/api/linux,macos,python
+
 # Ignore the dataset
 data/coco
+
 # Ignore .h5 files
 *.h5
 *.hdf5
+
+# Workspace files
+
+/workspace/output/*
+!/workspace/output/README.md
+
+# Models
+
+/data/models/*
+!/data/models/README.md
