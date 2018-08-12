@@ -2,7 +2,7 @@
 
 Fork of [neural-style-keras](https://github.com/robertomest/neural-style-keras) which provides an implementation of neural style transfer methods using Keras and Tensorflow. This includes the iterative stylization from [1], the fast style transfer from [2] and the multi-style nets from [3]. All models include instance normalization [4].
 
-In this repository, some experiments will be carried out on the different models such as tests with a webcam. Some minor changes could be made to the documentation. Required updates should be reflected in the related REQUIREMENTS.txt file.
+In this repository, some experiments will be carried out on the different models such as tests with a webcam. Some changes could be made to the documentation. Required updates should be reflected in the related REQUIREMENTS.txt file.
 
 Go to the README file of the source repository for the original instructions and functionality.
 
@@ -22,6 +22,16 @@ All the images in the `input_path` will be stylized and the resulting images wil
 Currently, there are no pre-trained models related to this fork.
 
 In the original repository, the following  [script](https://github.com/robertomest/neural-style-keras/blob/master/data/models/download_models.sh) is available to find some pre-trained models.
+
+#### Webcam
+
+An experimental script to use a webcam can be used with the intructions
+
+```bash
+python webcam.py --checkpoint_path data/models/udnie.h5
+```
+
+Currently, some pending evaluations are required in terms of performance.
 
 ## Training
 #### Required dataset
@@ -112,6 +122,7 @@ The full set of options include:
 * h5py
 * pyyaml
 * Pillow
+* OpenCV
 
 The experiments on this repository will consider the use of Python 3.
 
